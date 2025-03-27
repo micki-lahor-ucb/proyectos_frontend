@@ -284,8 +284,37 @@
       </div>
     </div>
     
-    <!-- Modales para crear y editar tareas (mantener los que ya teníamos) -->
-    <!-- ... -->
+    <!-- Modal para crear tarea -->
+    <div v-if="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <h2 class="text-xl font-bold mb-4">Crear Nueva Tarea</h2>
+        
+        <TaskForm 
+          :task="newTask" 
+          :projects="projectsStore.projects" 
+          :loading="tasksStore.loading"
+          id="new-task"
+          @submit="handleCreateTask"
+          @cancel="showCreateModal = false"
+        />
+      </div>
+    </div>
+
+    <!-- Modal para editar tarea -->
+    <div v-if="showEditModal && editingTask" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <h2 class="text-xl font-bold mb-4">Editar Tarea</h2>
+        
+        <TaskForm 
+          :task="editingTask" 
+          :projects="projectsStore.projects" 
+          :loading="tasksStore.loading"
+          id="edit-task"
+          @submit="handleUpdateTask"
+          @cancel="showEditModal = false"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -295,6 +324,7 @@ import { useTasksStore } from '../../stores/tasks';
 import { useProjectsStore } from '../../stores/projects';
 import { useNotification } from '../../composables/useNotification';
 import TaskCard from '../../components/TaskCard.vue';
+import TaskForm from '../../components/TaskForm.vue';
 
 const tasksStore = useTasksStore();
 const projectsStore = useProjectsStore();
