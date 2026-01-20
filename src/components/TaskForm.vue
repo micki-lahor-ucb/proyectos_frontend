@@ -1,10 +1,10 @@
 <template>
-  <form @submit.prevent="$emit('submit')">
+  <form @submit.prevent="emit('submit', localTask)">
     <div class="form-group">
       <label :for="`${id}-title`" class="form-label">Título</label>
       <input
         :id="`${id}-title`"
-        v-model="task.title"
+        v-model="localTask.title"
         type="text"
         class="input w-full"
         required
@@ -15,7 +15,7 @@
       <label :for="`${id}-description`" class="form-label">Descripción</label>
       <textarea
         :id="`${id}-description`"
-        v-model="task.description"
+        v-model="localTask.description"
         class="input w-full"
         rows="3"
       ></textarea>
@@ -25,7 +25,7 @@
       <label :for="`${id}-project`" class="form-label">Proyecto</label>
       <select
         :id="`${id}-project`"
-        v-model="task.projectId"
+        v-model="localTask.projectId"
         class="input w-full"
         required
       >
@@ -41,7 +41,7 @@
         <label :for="`${id}-status`" class="form-label">Estado</label>
         <select
           :id="`${id}-status`"
-          v-model="task.status"
+          v-model="localTask.status"
           class="input w-full"
         >
           <option value="PENDING">Pendiente</option>
@@ -54,7 +54,7 @@
         <label :for="`${id}-priority`" class="form-label">Prioridad</label>
         <select
           :id="`${id}-priority`"
-          v-model="task.priority"
+          v-model="localTask.priority"
           class="input w-full"
         >
           <option value="LOW">Baja</option>
@@ -68,7 +68,7 @@
       <label :for="`${id}-due-date`" class="form-label">Fecha límite</label>
       <input
         :id="`${id}-due-date`"
-        v-model="task.dueDate"
+        v-model="localTask.dueDate"
         type="date"
         class="input w-full"
       />
@@ -77,7 +77,7 @@
     <div class="flex justify-end mt-6 space-x-2">
       <button 
         type="button" 
-        @click="$emit('cancel')" 
+        @click="emit('cancel')" 
         class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
       >
         Cancelar
@@ -94,7 +94,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
   task: {
@@ -112,10 +112,22 @@ const props = defineProps({
   id: {
     type: String,
     default: 'task',
-  }
+  },
 });
 
-defineEmits(['submit', 'cancel']);
+const emit = defineEmits(['submit', 'cancel']);
 
 const isNew = computed(() => !props.task.id);
+
+// Crear una copia local del task para evitar mutar props
+const localTask = ref({ ...props.task });
+
+// Sincronizar cuando cambie el prop
+watch(
+  () => props.task,
+  (newTask) => {
+    localTask.value = { ...newTask };
+  },
+  { deep: true },
+);
 </script>

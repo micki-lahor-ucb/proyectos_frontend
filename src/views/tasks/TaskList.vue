@@ -409,16 +409,18 @@ const sortedTasks = computed(() => {
         valueA = a.dueDate ? new Date(a.dueDate).getTime() : Number.MAX_SAFE_INTEGER;
         valueB = b.dueDate ? new Date(b.dueDate).getTime() : Number.MAX_SAFE_INTEGER;
         break;
-      case 'priority':
+      case 'priority': {
         const priorityValues = { 'HIGH': 3, 'MEDIUM': 2, 'LOW': 1 };
         valueA = priorityValues[a.priority] || 0;
         valueB = priorityValues[b.priority] || 0;
         break;
-      case 'status':
+      }
+      case 'status': {
         const statusValues = { 'PENDING': 3, 'IN_PROGRESS': 2, 'COMPLETED': 1 };
         valueA = statusValues[a.status] || 0;
         valueB = statusValues[b.status] || 0;
         break;
+      }
       default:
         valueA = a[sortBy.value] || '';
         valueB = b[sortBy.value] || '';
@@ -489,9 +491,9 @@ const clearFilters = () => {
 };
 
 // Manipulación de tareas
-const handleCreateTask = async () => {
+const handleCreateTask = async (taskData) => {
   try {
-    await tasksStore.createTask(newTask.value);
+    await tasksStore.createTask(taskData || newTask.value);
     showCreateModal.value = false;
     
     // Reiniciar el formulario
@@ -522,9 +524,10 @@ const openEditModal = (task) => {
   showEditModal.value = true;
 };
 
-const handleUpdateTask = async () => {
+const handleUpdateTask = async (taskData) => {
   try {
-    await tasksStore.updateTask(editingTask.value.id, editingTask.value);
+    const task = taskData || editingTask.value;
+    await tasksStore.updateTask(task.id, task);
     showEditModal.value = false;
     notify('Tarea actualizada con éxito', 'success');
   } catch (error) {

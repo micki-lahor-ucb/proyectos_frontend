@@ -386,7 +386,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from 'vue-router';
 import { useProjectsStore } from "../../stores/projects";
 import { useTasksStore } from "../../stores/tasks";
 import { useNotification } from "../../composables/useNotification";
@@ -394,7 +394,6 @@ import TaskForm from '../../components/TaskForm.vue';
 
 
 const route = useRoute();
-const router = useRouter();
 const projectsStore = useProjectsStore();
 const tasksStore = useTasksStore();
 const { notify } = useNotification();
@@ -562,9 +561,9 @@ const handleUpdateProject = async () => {
   }
 };
 
-const handleCreateTask = async () => {
+const handleCreateTask = async (taskData) => {
   try {
-    await tasksStore.createTask(newTask.value);
+    await tasksStore.createTask(taskData || newTask.value);
     // Recargar el proyecto para actualizar la lista de tareas
     await projectsStore.fetchProjectById(projectId.value);
     showCreateTaskModal.value = false;
@@ -597,9 +596,10 @@ const handleEditTask = (task) => {
   showEditTaskModal.value = true;
 };
 
-const handleUpdateTask = async () => {
+const handleUpdateTask = async (taskData) => {
   try {
-    await tasksStore.updateTask(editingTask.value.id, editingTask.value);
+    const task = taskData || editingTask.value;
+    await tasksStore.updateTask(task.id, task);
     // Recargar el proyecto para actualizar la lista de tareas
     await projectsStore.fetchProjectById(projectId.value);
     showEditTaskModal.value = false;

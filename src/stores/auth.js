@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('auth', {
       this.error = null;
       
       try {
-        const response = await apiClient.post('/auth/register', userData);
+        await apiClient.post('/auth/register', userData);
         return true;
       } catch (error) {
         this.error = error.response?.data?.message || 'Error al registrarse';

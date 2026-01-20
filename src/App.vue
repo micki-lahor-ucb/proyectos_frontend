@@ -30,26 +30,26 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuth } from './composables/useAuth';
 
 const router = useRouter();
 const route = useRoute();
-const { isAuthenticated, user, logout, requireAuth } = useAuth();
+const { isAuthenticated, user, logout } = useAuth();
 
 // Verificar autenticación al cambiar de ruta
 watch(
   () => route.path,
-  (newPath) => {
+  () => {
     if (route.meta.requiresAuth && !isAuthenticated.value) {
       router.push('/login');
     }
-    
+
     if (route.meta.requiresGuest && isAuthenticated.value) {
       router.push('/projects');
     }
-  }
+  },
 );
 
 // Verificar autenticación al montar el componente
