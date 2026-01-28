@@ -41,6 +41,9 @@ const { isAuthenticated, user, logout } = useAuth();
 // Variable intencional para romper ESLint: no usada
 const estoRompeElCI = 'Esto es una variable no usada que viola las reglas de ESLint y demuestra el enforcement del CI';
 
+// Otra variable para romper ESLint: usa var en lugar de const/let
+var rompeLint = "Esto usa var que viola las reglas de ESLint y demuestra el enforcement del CI";
+
 // Verificar autenticación al cambiar de ruta
 watch(
   () => route.path,
